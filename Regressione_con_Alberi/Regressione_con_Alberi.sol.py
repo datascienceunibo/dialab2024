@@ -24,6 +24,10 @@ data["CompetitionOpen"] = (
     )
 )
 
+# 2b
+data.loc[data["CompetitionDistance"].isna(), "CompetitionDistance"] = data["CompetitionDistance"].max()
+# oppure: data["CompetitionDistance"] = data["CompetitionDistance"].fillna(data["CompetitionDistance"].max())
+
 
 # ESERCIZIO 3
 
@@ -75,7 +79,7 @@ gs.best_params_
 
 gs.score(data_val, y_val)
 
-# 3b
+# 5b
 model = Pipeline([
     ("preproc", ColumnTransformer([
         ("numeric", Pipeline([
