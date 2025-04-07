@@ -114,7 +114,8 @@ print_eval(X_test, y_test, model)
 # 6a
 model = Pipeline([
     ("scale", StandardScaler()),
-    ("regr",  KernelRidge(alpha=10, kernel="poly", degree=3))
+    ("poly",  PolynomialFeatures(degree=2, include_bias=False)),
+    ("regr",  Ridge(alpha=10))
 ])
 
 # 6b
@@ -127,7 +128,6 @@ cv_scores.mean(), cv_scores.std()
 
 # ESERCIZIO 7
 
-# 7a
 model = Pipeline([
     ("poly", PolynomialFeatures(include_bias=False)),
     ("scale", StandardScaler()),
@@ -137,20 +137,6 @@ grid = {
     "poly__degree": [2, 3],
     "regr__alpha": [0.1, 1, 10],
     "regr__l1_ratio": [0.1, 0.25, 0.5]
-}
-gs = GridSearchCV(model, grid, cv=kfold_5)
-gs.fit(X_train, y_train)
-print(gs.best_params_)
-print_eval(X_test, y_test, gs)
-
-# 7b
-model = Pipeline([
-    ("scale", StandardScaler()),
-    ("regr", KernelRidge(kernel="poly"))
-])
-grid = {
-    "regr__degree": range(2, 7),
-    "regr__alpha": [0.01, 0.1, 1, 10],
 }
 gs = GridSearchCV(model, grid, cv=kfold_5)
 gs.fit(X_train, y_train)
@@ -174,11 +160,13 @@ def nested_cv(model, grid):
 
 # 8b
 model = Pipeline([
+    ("poly", PolynomialFeatures(include_bias=False)),
     ("scale", StandardScaler()),
-    ("regr", KernelRidge(kernel="poly"))
+    ("regr", ElasticNet())
 ])
 grid = {
-    "regr__degree": range(2, 7),
-    "regr__alpha": [0.01, 0.1, 1, 10],
+    "poly__degree": [2, 3],
+    "regr__alpha": [0.1, 1, 10],
+    "regr__l1_ratio": [0.1, 0.25, 0.5]
 }
 nested_cv(model, grid)
